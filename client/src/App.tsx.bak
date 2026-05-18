@@ -1,0 +1,55 @@
+import { Toaster } from "@/components/ui/sonner";
+import { TooltipProvider } from "@/components/ui/tooltip";
+import NotFound from "@/pages/NotFound";
+import { Route, Switch } from "wouter";
+import ErrorBoundary from "./components/ErrorBoundary";
+import { ThemeProvider } from "./contexts/ThemeContext";
+import Home from "./pages/Home";
+import ShapeMatchingPage from "./pages/ShapeMatchingPage";
+import EmotionsPage from "./pages/EmotionsPage";
+import SchedulePage from "./pages/SchedulePage";
+import ProgressPage from "./pages/ProgressPage";
+import ParentDashboardPage from "./pages/ParentDashboardPage";
+import SpatialPage from "./pages/SpatialPage";
+import MemoryPage from "./pages/MemoryPage";
+import SequencePage from "./pages/SequencePage";
+import ClosurePage from "./pages/ClosurePage";
+import MotorPage from "./pages/MotorPage";
+import FigureGroundPage from "./pages/FigureGroundPage";
+import FormConstancyPage from "./pages/FormConstancyPage";
+
+function Router() {
+  return (
+    <Switch>
+      <Route path={"/"} component={Home} />
+      <Route path={"/shape-matching"} component={ShapeMatchingPage} />
+      <Route path={"/emotions"} component={EmotionsPage} />
+      <Route path={"/schedule"} component={SchedulePage} />
+      <Route path={"/progress"} component={ProgressPage} />
+      <Route path={"/parent-dashboard"} component={ParentDashboardPage} />
+      <Route path={"/spatial"} component={SpatialPage} />
+      <Route path={"/memory"} component={MemoryPage} />
+      <Route path={"/sequence"} component={SequencePage} />
+      <Route path={"/closure"} component={ClosurePage} />
+      <Route path={"/motor"} component={MotorPage} />
+      <Route path={"/figure-ground"} component={FigureGroundPage} />
+      <Route path={"/form-constancy"} component={FormConstancyPage} />
+      <Route component={NotFound} />
+    </Switch>
+  );
+}
+
+function App() {
+  return (
+    <ErrorBoundary>
+      <ThemeProvider defaultTheme="light">
+        <TooltipProvider>
+          <Router />
+          <Toaster />
+        </TooltipProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
+  );
+}
+
+export default App;
