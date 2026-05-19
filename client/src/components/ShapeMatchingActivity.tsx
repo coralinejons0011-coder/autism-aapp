@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
+import { useProgress } from "@/contexts/ProgressContext";
+import { RewardSystem } from "./RewardSystem";
 
 interface ShapeOption {
   id: string;
@@ -49,11 +51,13 @@ const questions = [
   },
 ];
 
-export function ShapeMatchingActivity() {
+export function ShapeMatchingActivity({ onComplete }: { onComplete?: () => void }) {
+  const { updateModuleProgress } = useProgress();
   const [currentQuestion, setCurrentQuestion] = useState(0);
-  const [score, setScore] = useState(0);
+  const [correctAnswers, setCorrectAnswers] = useState(0);
   const [answered, setAnswered] = useState(false);
   const [selectedAnswer, setSelectedAnswer] = useState<string | null>(null);
+  const [showReward, setShowReward] = useState(false);
 
   const question = questions[currentQuestion];
   const isCorrect = selectedAnswer === question.target;
@@ -63,7 +67,7 @@ export function ShapeMatchingActivity() {
       setSelectedAnswer(optionId);
       setAnswered(true);
       if (optionId === question.target) {
-        setScore(score + 1);
+        setCorrectAnswers(correctAnswers + 1);
       }
     }
   };
@@ -73,27 +77,27 @@ export function ShapeMatchingActivity() {
       setCurrentQuestion(currentQuestion + 1);
       setAnswered(false);
       setSelectedAnswer(null);
+    } else {
+      const finalScore = correctAnswers * 10;
+      updateModuleProgress('shape-matching', finalScore);
+      setShowReward(true);
     }
   };
 
   const renderShape = (option: ShapeOption) => {
     switch (option.shape) {
       case "square":
-        return (
-          <div className={`w-20 h-20 ${option.color} rounded-lg shadow-lg`} />
-        );
+        return <div className={`w-20 h-20 ${option.color} rounded-lg shadow-lg`} />;
       case "circle":
-        return (
-          <div className={`w-20 h-20 ${option.color} rounded-full shadow-lg`} />
-        );
+        return <div className={`w-20 h-20 ${option.color} rounded-full shadow-lg`} />;
       case "triangle":
         return (
           <div
-            className={`w-0 h-0 border-l-10 border-r-10 border-b-20 shadow-lg`}
+            className={`w-0 h-0`}
             style={{
               borderLeft: "40px solid transparent",
               borderRight: "40px solid transparent",
-              borderBottom: `70px solid ${option.color}`,
+              borderBottom: `70px solid ${option.color.replace('bg-', '')}`, // Simple hack for triangle color
             }}
           />
         );
@@ -101,6 +105,20 @@ export function ShapeMatchingActivity() {
         return null;
     }
   };
+
+  if (showReward) {
+    return (
+      <RewardSystem
+        isVisible={true}
+        starsEarned={Math.ceil((correctAnswers / questions.length) * 3)}
+        message={`أحسنت! حصلت على ${correctAnswers} من ${questions.length} إجابات صحيحة!`}
+        onComplete={() => {
+          setShowReward(false);
+          onComplete?.();
+        }}
+      />
+    );
+  }
 
   return (
     <div className="w-full max-w-2xl mx-auto p-6">
@@ -136,7 +154,7 @@ export function ShapeMatchingActivity() {
                   : "border-yellow-300 hover:border-yellow-500 hover:bg-yellow-50"
               }`}
             >
-              {renderShape(option)}
+              <div className="text-5xl mb-2">{option.emoji}</div>
               <span className="text-sm font-semibold text-[#0d1b2a]">{option.label}</span>
             </button>
           ))}
@@ -152,16 +170,15 @@ export function ShapeMatchingActivity() {
 
         <div className="flex justify-between items-center">
           <div className="text-center">
-            <p className="text-sm text-gray-500">النقاط</p>
-            <p className="text-2xl font-bold text-[#4dd9e0]">{score}/{questions.length}</p>
+            <p className="text-sm text-gray-500">الإجابات الصحيحة</p>
+            <p className="text-2xl font-bold text-[#4dd9e0]">{correctAnswers}/{questions.length}</p>
           </div>
           {answered && (
             <Button
               onClick={handleNext}
-              disabled={currentQuestion === questions.length - 1}
               className="bg-[#4dd9e0] hover:bg-[#3bc8cf] text-[#0d1b2a] font-bold px-8 py-3 rounded-full"
             >
-              {currentQuestion === questions.length - 1 ? "انتهى" : "التالي →"}
+              {currentQuestion === questions.length - 1 ? "عرض النتائج" : "التالي →"}
             </Button>
           )}
         </div>

@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { RewardSystem } from "@/components/RewardSystem";
+import { useProgress } from "@/contexts/ProgressContext";
 
 const questions = [
   { prompt: "هذه دائرة كبيرة 🔵 - أي من هذه أيضاً دائرة؟", options: [
@@ -30,6 +31,7 @@ const questions = [
 
 export default function FormConstancyPage() {
   const [, setLocation] = useLocation();
+  const { updateModuleProgress } = useProgress();
   const [current, setCurrent] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [selected, setSelected] = useState<number | null>(null);
@@ -40,10 +42,21 @@ export default function FormConstancyPage() {
   const handleAnswer = (idx: number) => {
     if (answered) return;
     setSelected(idx); setAnswered(true);
-    if (q.options[idx].correct) setCorrect(c => c + 1);
+    let newCorrect = correct;
+    if (q.options[idx].correct) {
+      newCorrect = correct + 1;
+      setCorrect(newCorrect);
+    }
     setTimeout(() => {
-      if (current < questions.length - 1) { setCurrent(c => c + 1); setSelected(null); setAnswered(false); }
-      else setShowReward(true);
+      if (current < questions.length - 1) { 
+        setCurrent(c => c + 1); 
+        setSelected(null); 
+        setAnswered(false); 
+      }
+      else {
+        updateModuleProgress('form-constancy', newCorrect * 15);
+        setShowReward(true);
+      }
     }, 1800);
   };
 
@@ -51,10 +64,10 @@ export default function FormConstancyPage() {
     <div dir="rtl" className="min-h-screen bg-gradient-to-br from-[#f0f9ff] via-white to-[#e0f7fa]">
       <RewardSystem isVisible={showReward} starsEarned={Math.ceil((correct/questions.length)*3)}
         message={`أحسنت! أجبت على ${correct} من ${questions.length}!`}
-        onComplete={() => { setShowReward(false); setLocation("/"); }} />
+        onComplete={() => { setShowReward(false); setLocation("/dashboard"); }} />
       <div className="bg-white shadow-sm border-b border-[#84cc16]/30 px-4 py-4">
         <div className="container max-w-4xl mx-auto flex items-center gap-4">
-          <Button variant="ghost" onClick={() => setLocation("/")}><ArrowRight size={20} className="ml-2" /> رجوع</Button>
+          <Button variant="ghost" onClick={() => setLocation("/dashboard")}><ArrowRight size={20} className="ml-2" /> رجوع</Button>
           <div className="flex items-center gap-3">
             <span className="text-3xl">🔺</span>
             <div><h1 className="text-xl font-bold text-[#0d1b2a]">الثبات الشكلي</h1>
@@ -64,7 +77,7 @@ export default function FormConstancyPage() {
       </div>
       <div className="container max-w-2xl mx-auto px-4 py-8">
         <div className="mb-4 flex justify-between">
-          <span className="text-gray-500">السؤال {current + 1} من {questions.length}</span>
+          <span className="text-gray-500">السؤال {current + 1} de {questions.length}</span>
           <span className="text-[#84cc16] font-bold">✅ {correct} صحيح</span>
         </div>
         <Card className="p-8 text-center mb-6 bg-white shadow-lg">
@@ -74,7 +87,7 @@ export default function FormConstancyPage() {
               <button key={idx} onClick={() => handleAnswer(idx)} disabled={answered}
                 className={`p-6 rounded-2xl transition-all duration-300 ${
                   answered ? opt.correct ? "bg-green-100 border-2 border-green-500 scale-105" :
-                  idx === selected ? "bg-red-100 border-2 border-red-400" : "bg-gray-100 opacity-50"
+                  idx === selected ? "bg-red-100 border-2 border-red-400" : "bg-gray-50 opacity-50"
                   : "bg-[#84cc16]/10 hover:bg-[#84cc16]/20 border-2 border-transparent hover:border-[#84cc16] cursor-pointer hover:scale-105"
                 }`}>
                 <div className="text-6xl mb-2">{opt.emoji}</div>

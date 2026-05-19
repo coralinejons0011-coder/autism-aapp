@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { RewardSystem } from "@/components/RewardSystem";
+import { useProgress } from "@/contexts/ProgressContext";
 
 const questions = [
   { prompt: "ابحث عن النجمة المخفية في الصورة", scene: ["🌟","🌿","🌿","🌿","🌿","🌿","🌿","🌿","🌿"], answer: "🌟", options: ["🌟","🌸","🍀"] },
@@ -14,6 +15,7 @@ const questions = [
 
 export default function FigureGroundPage() {
   const [, setLocation] = useLocation();
+  const { updateModuleProgress } = useProgress();
   const [current, setCurrent] = useState(0);
   const [correct, setCorrect] = useState(0);
   const [selected, setSelected] = useState<string | null>(null);
@@ -24,10 +26,21 @@ export default function FigureGroundPage() {
   const handleAnswer = (ans: string) => {
     if (answered) return;
     setSelected(ans); setAnswered(true);
-    if (ans === q.answer) setCorrect(c => c + 1);
+    let newCorrect = correct;
+    if (ans === q.answer) {
+      newCorrect = correct + 1;
+      setCorrect(newCorrect);
+    }
     setTimeout(() => {
-      if (current < questions.length - 1) { setCurrent(c => c + 1); setSelected(null); setAnswered(false); }
-      else setShowReward(true);
+      if (current < questions.length - 1) { 
+        setCurrent(c => c + 1); 
+        setSelected(null); 
+        setAnswered(false); 
+      }
+      else {
+        updateModuleProgress('figure-ground', newCorrect * 15);
+        setShowReward(true);
+      }
     }, 1800);
   };
 
@@ -35,10 +48,10 @@ export default function FigureGroundPage() {
     <div dir="rtl" className="min-h-screen bg-gradient-to-br from-[#f0f9ff] via-white to-[#e0f7fa]">
       <RewardSystem isVisible={showReward} starsEarned={Math.ceil((correct/questions.length)*3)}
         message={`أحسنت! وجدت ${correct} من ${questions.length}!`}
-        onComplete={() => { setShowReward(false); setLocation("/"); }} />
+        onComplete={() => { setShowReward(false); setLocation("/dashboard"); }} />
       <div className="bg-white shadow-sm border-b border-[#06b6d4]/30 px-4 py-4">
         <div className="container max-w-4xl mx-auto flex items-center gap-4">
-          <Button variant="ghost" onClick={() => setLocation("/")}><ArrowRight size={20} className="ml-2" /> رجوع</Button>
+          <Button variant="ghost" onClick={() => setLocation("/dashboard")}><ArrowRight size={20} className="ml-2" /> رجوع</Button>
           <div className="flex items-center gap-3">
             <span className="text-3xl">🔍</span>
             <div><h1 className="text-xl font-bold text-[#0d1b2a]">الشكل والخلفية</h1>

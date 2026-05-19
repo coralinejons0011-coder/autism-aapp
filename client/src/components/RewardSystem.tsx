@@ -34,7 +34,7 @@ export function RewardSystem({ isVisible, starsEarned, message, onComplete }: Re
         currentStar++;
       } else {
         clearInterval(interval);
-        setTimeout(() => { onComplete?.(); }, 2000);
+        setTimeout(() => { onComplete?.(); }, 3000);
       }
     }, 400);
     return () => clearInterval(interval);

@@ -18,7 +18,7 @@ export default function SchedulePage() {
     <div dir="rtl" className="min-h-screen bg-gradient-to-br from-[#f0f9ff] via-white to-[#e0f7fa]">
       <div className="bg-white shadow-sm border-b border-[#4dd9e0]/30 px-4 py-4">
         <div className="container max-w-4xl mx-auto flex items-center gap-4">
-          <Button variant="ghost" onClick={() => setLocation("/")} className="text-[#0d1b2a]">
+          <Button variant="ghost" onClick={() => setLocation("/dashboard")} className="text-[#0d1b2a]">
             <ArrowRight size={20} className="ml-2" /> رجوع
           </Button>
           <div className="flex items-center gap-3">
