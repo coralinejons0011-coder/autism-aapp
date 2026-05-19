@@ -20,32 +20,36 @@ export default function WelcomePage() {
       <div className="absolute top-0 left-0 w-64 h-64 bg-[#4dd9e0]/10 rounded-full -ml-32 -mt-32 blur-3xl" />
       <div className="absolute bottom-0 right-0 w-96 h-96 bg-[#7c3aed]/10 rounded-full -mr-48 -mb-48 blur-3xl" />
       
-      <div className="w-full max-w-4xl text-center z-10 flex flex-col items-center">
-        <div className="mb-12 animate-bounce">
-          <div className="w-32 h-32 bg-gradient-to-br from-[#4dd9e0] to-[#7c3aed] rounded-[40px] mx-auto flex items-center justify-center shadow-2xl rotate-12">
-            <span className="text-white text-6xl font-black -rotate-12">V</span>
-          </div>
+      <div className="w-full max-w-5xl text-center z-10 flex flex-col items-center">
+        <div className="mb-10 animate-pulse">
+          <img 
+            src="/logo-transparent.png" 
+            alt="VESIO PR Logo" 
+            className="w-48 h-48 sm:w-64 sm:h-64 object-contain drop-shadow-[0_0_30px_rgba(77,217,224,0.3)]"
+          />
         </div>
         
         <h1 className="text-6xl sm:text-8xl font-black text-white mb-6 tracking-tight">
           VESIO <span className="text-[#4dd9e0]">PR</span>
         </h1>
         
-        <p className="text-2xl sm:text-3xl text-[#a0d8dc] mb-12 font-bold leading-relaxed max-w-2xl">
+        <p className="text-2xl sm:text-3xl text-[#a0d8dc] mb-12 font-bold leading-relaxed max-w-3xl">
           برنامج تحسين الإدراك البصري المتكامل <br />
-          <span className="text-lg text-gray-400 font-normal">تطبيق متخصص لتحسين المهارات البصرية عند الأطفال من ذوي اضطراب طيف التوحد من خلال أنشطة تفاعلية ممتعة</span>
+          <span className="text-lg sm:text-xl text-gray-400 font-normal mt-4 block">
+            تطبيق متخصص لتحسين المهارات البصرية عند الأطفال من ذوي اضطراب طيف التوحد من خلال أنشطة تفاعلية ممتعة
+          </span>
         </p>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-md">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 w-full max-w-lg">
           <button 
             onClick={() => setLocation('/login')}
-            className="bg-[#4dd9e0] hover:bg-[#3bc5cc] text-[#0d1b2a] font-black py-6 rounded-3xl text-2xl shadow-xl transition-all transform hover:scale-105"
+            className="bg-[#4dd9e0] hover:bg-[#3bc5cc] text-[#0d1b2a] font-black py-6 rounded-3xl text-2xl shadow-xl transition-all transform hover:scale-105 active:scale-95"
           >
             ابدأ الآن 🚀
           </button>
           <button 
             onClick={() => setLocation('/signup')}
-            className="bg-transparent border-2 border-[#4dd9e0] text-[#4dd9e0] hover:bg-[#4dd9e0]/10 font-black py-6 rounded-3xl text-2xl transition-all transform hover:scale-105"
+            className="bg-transparent border-2 border-[#4dd9e0] text-[#4dd9e0] hover:bg-[#4dd9e0]/10 font-black py-6 rounded-3xl text-2xl transition-all transform hover:scale-105 active:scale-95"
           >
             إنشاء حساب
           </button>
