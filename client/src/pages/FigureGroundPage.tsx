@@ -5,6 +5,7 @@ import { Card } from "@/components/ui/card";
 import { ArrowRight } from "lucide-react";
 import { RewardSystem } from "@/components/RewardSystem";
 import { useProgress } from "@/contexts/ProgressContext";
+import DashboardLayout from "@/components/DashboardLayout";
 
 const questions = [
   { prompt: "ابحث عن النجمة المخفية في الصورة", scene: ["🌟","🌿","🌿","🌿","🌿","🌿","🌿","🌿","🌿"], answer: "🌟", options: ["🌟","🌸","🍀"] },
@@ -45,48 +46,54 @@ export default function FigureGroundPage() {
   };
 
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-[#f0f9ff] via-white to-[#e0f7fa]">
-      <RewardSystem isVisible={showReward} starsEarned={Math.ceil((correct/questions.length)*3)}
-        message={`أحسنت! وجدت ${correct} من ${questions.length}!`}
-        onComplete={() => { setShowReward(false); setLocation("/dashboard"); }} />
-      <div className="bg-white shadow-sm border-b border-[#06b6d4]/30 px-4 py-4">
-        <div className="container max-w-4xl mx-auto flex items-center gap-4">
-          <Button variant="ghost" onClick={() => setLocation("/dashboard")}><ArrowRight size={20} className="ml-2" /> رجوع</Button>
+    <DashboardLayout>
+      <div dir="rtl" className="p-6 max-w-4xl mx-auto">
+        <RewardSystem isVisible={showReward} starsEarned={Math.ceil((correct/questions.length)*3)}
+          message={`أحسنت! وجدت ${correct} من ${questions.length}!`}
+          onComplete={() => { setShowReward(false); setLocation("/dashboard"); }} />
+        
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="ghost" onClick={() => setLocation("/dashboard")} className="text-[#0d1b2a]">
+            <ArrowRight size={20} className="ml-2" /> رجوع
+          </Button>
           <div className="flex items-center gap-3">
             <span className="text-3xl">🔍</span>
-            <div><h1 className="text-xl font-bold text-[#0d1b2a]">الشكل والخلفية</h1>
-            <p className="text-sm text-gray-500">المحور السابع - ابحث عن الأشياء المخفية</p></div>
+            <div>
+              <h1 className="text-2xl font-black text-[#0d1b2a]">الشكل والخلفية</h1>
+              <p className="text-sm text-gray-500 font-bold">المحور السابع - ابحث عن الأشياء المخفية</p>
+            </div>
           </div>
         </div>
-      </div>
-      <div className="container max-w-2xl mx-auto px-4 py-8">
-        <div className="mb-4 flex justify-between">
-          <span className="text-gray-500">السؤال {current + 1} من {questions.length}</span>
-          <span className="text-[#06b6d4] font-bold">✅ {correct} صحيح</span>
+
+        <div className="max-w-2xl mx-auto">
+          <div className="mb-4 flex justify-between">
+            <span className="text-gray-500 font-bold">السؤال {current + 1} من {questions.length}</span>
+            <span className="text-[#06b6d4] font-black">✅ {correct} صحيح</span>
+          </div>
+          <Card className="p-8 text-center mb-6 bg-white shadow-lg border-2 border-[#06b6d4]/20 rounded-3xl">
+            <p className="text-2xl font-black text-[#0d1b2a] mb-8">{q.prompt}</p>
+            <div className="grid grid-cols-3 gap-4 mb-8 bg-[#06b6d4]/5 p-6 rounded-3xl border-2 border-dashed border-[#06b6d4]/20">
+              {q.scene.map((item, i) => (
+                <span key={i} className="text-5xl text-center transition-transform hover:scale-110">{item}</span>
+              ))}
+            </div>
+            <p className="text-gray-500 mb-6 font-bold text-lg">ما الشيء المختلف الذي رأيته؟</p>
+            <div className="grid grid-cols-3 gap-4">
+              {q.options.map(opt => (
+                <button key={opt} onClick={() => handleAnswer(opt)} disabled={answered}
+                  className={`p-6 rounded-2xl text-5xl transition-all duration-300 shadow-sm ${
+                    answered ? opt === q.answer ? "bg-green-100 border-4 border-green-500 scale-105" :
+                    opt === selected ? "bg-red-100 border-4 border-red-400" : "bg-gray-100 opacity-50"
+                    : "bg-[#06b6d4]/10 hover:bg-[#06b6d4]/20 border-4 border-transparent hover:border-[#06b6d4] cursor-pointer hover:scale-105"
+                  }`}>{opt}</button>
+              ))}
+            </div>
+            {answered && <div className={`mt-8 p-6 rounded-2xl text-xl font-black shadow-inner animate-in fade-in zoom-in duration-300 ${selected === q.answer ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
+              {selected === q.answer ? "أحسنت! وجدته! 🌟" : `الإجابة الصحيحة هي: ${q.answer} 😊`}
+            </div>}
+          </Card>
         </div>
-        <Card className="p-8 text-center mb-6 bg-white shadow-lg">
-          <p className="text-2xl font-bold text-[#0d1b2a] mb-6">{q.prompt}</p>
-          <div className="grid grid-cols-3 gap-2 mb-6 bg-[#06b6d4]/5 p-4 rounded-2xl">
-            {q.scene.map((item, i) => (
-              <span key={i} className="text-4xl text-center">{item}</span>
-            ))}
-          </div>
-          <p className="text-gray-500 mb-4">ما الشيء المختلف الذي رأيته؟</p>
-          <div className="grid grid-cols-3 gap-4">
-            {q.options.map(opt => (
-              <button key={opt} onClick={() => handleAnswer(opt)} disabled={answered}
-                className={`p-5 rounded-2xl text-5xl transition-all duration-300 ${
-                  answered ? opt === q.answer ? "bg-green-100 border-2 border-green-500 scale-105" :
-                  opt === selected ? "bg-red-100 border-2 border-red-400" : "bg-gray-100 opacity-50"
-                  : "bg-[#06b6d4]/10 hover:bg-[#06b6d4]/20 border-2 border-transparent hover:border-[#06b6d4] cursor-pointer hover:scale-105"
-                }`}>{opt}</button>
-            ))}
-          </div>
-          {answered && <div className={`mt-6 p-4 rounded-xl text-lg font-bold ${selected === q.answer ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"}`}>
-            {selected === q.answer ? "أحسنت! وجدته! 🌟" : `الإجابة: ${q.answer} 😊`}
-          </div>}
-        </Card>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }

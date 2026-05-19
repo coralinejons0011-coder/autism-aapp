@@ -2,6 +2,7 @@ import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import { DailyVisualSchedule } from "@/components/DailyVisualSchedule";
 import { ArrowRight } from "lucide-react";
+import DashboardLayout from "@/components/DashboardLayout";
 
 const sampleTasks = [
   { id: 1, title: "وقت الإفطار", description: "تناول وجبة الإفطار الصحية", icon: "🍳", completed: false, order: 1 },
@@ -15,21 +16,26 @@ const sampleTasks = [
 export default function SchedulePage() {
   const [, setLocation] = useLocation();
   return (
-    <div dir="rtl" className="min-h-screen bg-gradient-to-br from-[#f0f9ff] via-white to-[#e0f7fa]">
-      <div className="bg-white shadow-sm border-b border-[#4dd9e0]/30 px-4 py-4">
-        <div className="container max-w-4xl mx-auto flex items-center gap-4">
+    <DashboardLayout>
+      <div dir="rtl" className="p-6 max-w-5xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" onClick={() => setLocation("/dashboard")} className="text-[#0d1b2a]">
             <ArrowRight size={20} className="ml-2" /> رجوع
           </Button>
           <div className="flex items-center gap-3">
             <span className="text-3xl">📅</span>
-            <h1 className="text-xl font-bold text-[#0d1b2a]">الجدول اليومي</h1>
+            <h1 className="text-2xl font-black text-[#0d1b2a]">الجدول اليومي</h1>
+          </div>
+        </div>
+        
+        <div className="max-w-2xl mx-auto">
+          <div className="bg-white p-8 rounded-3xl shadow-sm border-2 border-[#4dd9e0]/20 mb-8">
+            <h2 className="text-xl font-bold text-[#0d1b2a] mb-4 text-center">جدول المهام البصري</h2>
+            <p className="text-gray-500 text-center mb-8">يساعد الجدول البصري طفلك على فهم الروتين اليومي وتقليل التوتر.</p>
+            <DailyVisualSchedule tasks={sampleTasks} />
           </div>
         </div>
       </div>
-      <div className="container max-w-2xl mx-auto px-4 py-8">
-        <DailyVisualSchedule tasks={sampleTasks} />
-      </div>
-    </div>
+    </DashboardLayout>
   );
 }

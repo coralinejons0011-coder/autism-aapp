@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
+import { ChevronRight, ArrowRight } from 'lucide-react';
+import { useLocation } from "wouter";
+import { Button } from "@/components/ui/button";
+import DashboardLayout from "@/components/DashboardLayout";
 
 interface DiscriminationItem {
   id: string;
@@ -9,9 +12,9 @@ interface DiscriminationItem {
 }
 
 export default function Module1DiscriminationPage() {
+  const [, setLocation] = useLocation();
   const [level, setLevel] = useState<1 | 2>(1);
   const [score, setScore] = useState(0);
-  const [completed, setCompleted] = useState(false);
 
   // Level 1: Simple shape discrimination
   const level1Items: DiscriminationItem[] = [
@@ -39,65 +42,77 @@ export default function Module1DiscriminationPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 p-8">
-      <div className="max-w-2xl mx-auto">
-        {/* Header */}
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-cyan-400 mb-2">👁️ التمييز البصري</h1>
-          <p className="text-gray-300">اختر جميع {targetLabel}</p>
-          <div className="mt-4 flex justify-center gap-4">
-            <button
-              onClick={() => setLevel(1)}
-              className={`px-6 py-2 rounded-lg font-bold transition ${
-                level === 1
-                  ? 'bg-cyan-400 text-slate-900'
-                  : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-              }`}
-            >
-              المستوى 1
-            </button>
-            <button
-              onClick={() => setLevel(2)}
-              className={`px-6 py-2 rounded-lg font-bold transition ${
-                level === 2
-                  ? 'bg-cyan-400 text-slate-900'
-                  : 'bg-slate-700 text-gray-300 hover:bg-slate-600'
-              }`}
-            >
-              المستوى 2
-            </button>
+    <DashboardLayout>
+      <div dir="rtl" className="p-6 max-w-4xl mx-auto">
+        <div className="flex items-center gap-4 mb-8">
+          <Button variant="ghost" onClick={() => setLocation("/dashboard")} className="text-[#0d1b2a]">
+            <ArrowRight size={20} className="ml-2" /> رجوع
+          </Button>
+          <div className="flex items-center gap-3">
+            <span className="text-3xl">👁️</span>
+            <div>
+              <h1 className="text-2xl font-black text-[#0d1b2a]">التمييز البصري</h1>
+              <p className="text-sm text-gray-500 font-bold">المحور الأول - اختر جميع الأشكال الصحيحة</p>
+            </div>
           </div>
         </div>
 
-        {/* Score */}
-        <div className="text-center mb-8">
-          <p className="text-2xl font-bold text-yellow-400">⭐ النقاط: {score}</p>
-        </div>
+        <div className="bg-white p-8 rounded-3xl shadow-sm border-2 border-cyan-400/20">
+          <div className="text-center mb-8">
+            <p className="text-2xl font-black text-[#0d1b2a] mb-6">اختر جميع {targetLabel}</p>
+            <div className="flex justify-center gap-4">
+              <button
+                onClick={() => setLevel(1)}
+                className={`px-8 py-3 rounded-2xl font-black transition-all shadow-md ${
+                  level === 1
+                    ? 'bg-cyan-400 text-[#0d1b2a] scale-105'
+                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                }`}
+              >
+                المستوى 1
+              </button>
+              <button
+                onClick={() => setLevel(2)}
+                className={`px-8 py-3 rounded-2xl font-black transition-all shadow-md ${
+                  level === 2
+                    ? 'bg-cyan-400 text-[#0d1b2a] scale-105'
+                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                }`}
+              >
+                المستوى 2
+              </button>
+            </div>
+          </div>
 
-        {/* Items Grid */}
-        <div className="grid grid-cols-2 gap-6 mb-8">
-          {items.map((item) => (
-            <button
-              key={item.id}
-              onClick={() => handleSelect(item)}
-              className="bg-slate-700 hover:bg-slate-600 p-8 rounded-lg transition transform hover:scale-105 border-2 border-cyan-400"
-            >
-              <div className="text-6xl mb-4">{item.image}</div>
-              <p className="text-gray-300 text-lg">{item.label}</p>
-            </button>
-          ))}
-        </div>
+          <div className="text-center mb-8">
+            <p className="text-3xl font-black text-yellow-500 bg-yellow-50 inline-block px-6 py-2 rounded-2xl border-2 border-yellow-200">
+              ⭐ النقاط: {score}
+            </p>
+          </div>
 
-        {/* Navigation */}
-        <div className="flex justify-between">
-          <button className="px-6 py-3 bg-slate-700 text-gray-300 rounded-lg hover:bg-slate-600">
-            رجوع
-          </button>
-          <button className="px-6 py-3 bg-cyan-400 text-slate-900 rounded-lg hover:bg-cyan-300 font-bold flex items-center gap-2">
-            التالي <ChevronRight size={20} />
-          </button>
+          <div className="grid grid-cols-2 gap-6 mb-8 max-w-lg mx-auto">
+            {items.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleSelect(item)}
+                className="bg-gray-50 hover:bg-white p-10 rounded-3xl transition-all transform hover:scale-105 border-4 border-transparent hover:border-cyan-400 shadow-sm hover:shadow-xl"
+              >
+                <div className="text-7xl mb-4">{item.image}</div>
+                <p className="text-[#0d1b2a] text-xl font-black">{item.label}</p>
+              </button>
+            ))}
+          </div>
+
+          <div className="flex justify-between items-center mt-12 border-t pt-8">
+            <Button variant="outline" onClick={() => setLocation("/dashboard")} className="px-8 py-6 rounded-2xl border-2 font-black text-lg">
+              إنهاء النشاط
+            </Button>
+            <Button className="px-8 py-6 bg-cyan-400 hover:bg-cyan-500 text-[#0d1b2a] rounded-2xl font-black text-lg shadow-lg flex items-center gap-2">
+              المستوى التالي <ChevronRight size={24} />
+            </Button>
+          </div>
         </div>
       </div>
-    </div>
+    </DashboardLayout>
   );
 }
