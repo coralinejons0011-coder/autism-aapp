@@ -10,11 +10,11 @@ interface Emotion {
 }
 
 const emotions: Emotion[] = [
-  { id: "happy", name: "Happy", emoji: "😊", description: "Smiling face" },
-  { id: "sad", name: "Sad", emoji: "😢", description: "Crying face" },
-  { id: "angry", name: "Angry", emoji: "😠", description: "Angry face" },
-  { id: "surprised", name: "Surprised", emoji: "😮", description: "Surprised face" },
-  { id: "calm", name: "Calm", emoji: "😌", description: "Peaceful face" },
+  { id: "happy", name: "سعيد", emoji: "😊", description: "وجه مبتسم" },
+  { id: "sad", name: "حزين", emoji: "😢", description: "وجه باكي" },
+  { id: "angry", name: "غاضب", emoji: "😠", description: "وجه غاضب" },
+  { id: "surprised", name: "متفاجئ", emoji: "😮", description: "وجه متفاجئ" },
+  { id: "calm", name: "هادئ", emoji: "😌", description: "وجه هادئ" },
 ];
 
 interface EmotionsRecognitionActivityProps {
@@ -33,11 +33,11 @@ export function EmotionsRecognitionActivity({
   const [answered, setAnswered] = useState(false);
 
   const questions = [
-    { question: "Which face is happy?", correctId: "happy" },
-    { question: "Which face is sad?", correctId: "sad" },
-    { question: "Which face is angry?", correctId: "angry" },
-    { question: "Which face is surprised?", correctId: "surprised" },
-    { question: "Which face is calm?", correctId: "calm" },
+    { question: "أي وجه يعبر عن السعادة؟", correctId: "happy" },
+    { question: "أي وجه يعبر عن الحزن؟", correctId: "sad" },
+    { question: "أي وجه يعبر عن الغضب؟", correctId: "angry" },
+    { question: "أي وجه يعبر عن المفاجأة؟", correctId: "surprised" },
+    { question: "أي وجه يعبر عن الهدوء؟", correctId: "calm" },
   ];
 
   const currentQ = questions[currentQuestion];
@@ -85,30 +85,30 @@ export function EmotionsRecognitionActivity({
       <RewardSystem
         isVisible={true}
         starsEarned={Math.ceil((correctAnswers / questions.length) * 3)}
-        message={`You got ${correctAnswers} out of ${questions.length} correct!`}
+        message={`أحسنت! لقد أجبت على ${correctAnswers} من أصل ${questions.length} بشكل صحيح!`}
         onComplete={handleRewardComplete}
       />
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-background via-background to-primary/5 flex items-center justify-center p-4">
+    <div dir="rtl" className="min-h-[600px] flex items-center justify-center p-4">
       <div className="w-full max-w-2xl">
         {/* Progress Indicator */}
         <div className="mb-8 text-center">
-          <p className="text-lg text-muted-foreground mb-4">
-            Question {currentQuestion + 1} of {questions.length}
+          <p className="text-xl font-bold text-gray-500 mb-4">
+            السؤال {currentQuestion + 1} من {questions.length}
           </p>
           <div className="flex gap-2 justify-center">
             {Array.from({ length: questions.length }).map((_, i) => (
               <div
                 key={i}
-                className={`h-2 rounded-full transition-all duration-300 ${
+                className={`h-3 rounded-full transition-all duration-300 ${
                   i < currentQuestion
-                    ? "bg-primary w-8"
+                    ? "bg-[#4dd9e0] w-10"
                     : i === currentQuestion
-                      ? "bg-secondary w-8"
-                      : "bg-muted w-6"
+                      ? "bg-[#7c3aed] w-10"
+                      : "bg-gray-200 w-8"
                 }`}
               />
             ))}
@@ -116,33 +116,33 @@ export function EmotionsRecognitionActivity({
         </div>
 
         {/* Question */}
-        <div className="bg-white rounded-3xl p-8 shadow-lg mb-8 text-center slide-up-calm">
-          <h2 className="text-3xl font-bold text-primary mb-8">
+        <div className="bg-white rounded-3xl p-10 shadow-xl border-2 border-[#4dd9e0]/20 mb-8 text-center">
+          <h2 className="text-3xl font-black text-[#0d1b2a] mb-10">
             {currentQ.question}
           </h2>
 
           {/* Emotion Options */}
-          <div className="grid grid-cols-3 gap-6 mb-8">
+          <div className="grid grid-cols-3 gap-6 mb-10">
             {emotionOptions.map((emotion) => (
               <button
                 key={emotion.id}
                 onClick={() => handleAnswer(emotion.id)}
                 disabled={answered}
                 className={`
-                  relative p-8 rounded-2xl transition-all duration-300
+                  relative p-8 rounded-3xl transition-all duration-300 shadow-sm
                   ${
                     selectedAnswer === emotion.id
                       ? emotion.id === currentQ.correctId
-                        ? "bg-primary/20 ring-4 ring-primary scale-105"
-                        : "bg-destructive/20 ring-4 ring-destructive scale-95"
-                      : "bg-muted hover:bg-muted/80"
+                        ? "bg-green-100 ring-4 ring-green-500 scale-105"
+                        : "bg-red-100 ring-4 ring-red-400 scale-95"
+                      : "bg-gray-50 hover:bg-white hover:shadow-md"
                   }
                   ${answered ? "cursor-not-allowed" : "cursor-pointer hover:scale-105"}
                   disabled:opacity-75
                 `}
               >
-                <div className="text-6xl mb-4">{emotion.emoji}</div>
-                <p className="text-sm font-semibold text-foreground">
+                <div className="text-7xl mb-4">{emotion.emoji}</div>
+                <p className="text-lg font-black text-[#0d1b2a]">
                   {emotion.name}
                 </p>
               </button>
@@ -153,17 +153,17 @@ export function EmotionsRecognitionActivity({
           {answered && (
             <div
               className={`
-                text-lg font-semibold p-4 rounded-xl
+                text-xl font-black p-6 rounded-2xl shadow-inner animate-in fade-in zoom-in duration-300
                 ${
                   selectedAnswer === currentQ.correctId
-                    ? "bg-primary/10 text-primary"
-                    : "bg-destructive/10 text-destructive"
+                    ? "bg-green-100 text-green-700"
+                    : "bg-red-100 text-red-700"
                 }
               `}
             >
               {selectedAnswer === currentQ.correctId
-                ? "Correct! Great job!"
-                : "Try again next time!"}
+                ? "إجابة صحيحة! عمل رائع! 🌟"
+                : "حاول مرة أخرى في المرة القادمة! 😊"}
             </div>
           )}
         </div>
@@ -174,9 +174,9 @@ export function EmotionsRecognitionActivity({
             <Button
               variant="outline"
               onClick={() => handleAnswer("")}
-              className="calm-button-hover"
+              className="px-10 py-6 rounded-2xl font-black text-lg border-2 hover:bg-gray-50"
             >
-              Skip
+              تخطي
             </Button>
           </div>
         )}

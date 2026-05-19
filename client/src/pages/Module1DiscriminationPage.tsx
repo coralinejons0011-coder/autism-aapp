@@ -3,47 +3,91 @@ import { ChevronRight, ArrowRight } from 'lucide-react';
 import { useLocation } from "wouter";
 import { Button } from "@/components/ui/button";
 import DashboardLayout from "@/components/DashboardLayout";
+import { RewardSystem } from "@/components/RewardSystem";
 
 interface DiscriminationItem {
   id: string;
   image: string;
   label: string;
-  isTarget: boolean;
+  category: 'fruit' | 'object' | 'animal';
 }
 
 export default function Module1DiscriminationPage() {
   const [, setLocation] = useLocation();
-  const [level, setLevel] = useState<1 | 2>(1);
+  const [level, setLevel] = useState<1 | 2 | 3>(1);
   const [score, setScore] = useState(0);
+  const [showReward, setShowReward] = useState(false);
 
-  // Level 1: Simple shape discrimination
-  const level1Items: DiscriminationItem[] = [
-    { id: '1', image: '🔵', label: 'دائرة', isTarget: true },
-    { id: '2', image: '🟩', label: 'مربع', isTarget: false },
-    { id: '3', image: '🔵', label: 'دائرة', isTarget: true },
-    { id: '4', image: '🔺', label: 'مثلث', isTarget: false },
+  // Level 1: Fruits
+  const fruitItems: DiscriminationItem[] = [
+    { id: 'f1', image: '🍎', label: 'تفاح', category: 'fruit' },
+    { id: 'f2', image: '🍌', label: 'موز', category: 'fruit' },
+    { id: 'f3', image: '🍊', label: 'برتقال', category: 'fruit' },
+    { id: 'f4', image: '🍓', label: 'فراولة', category: 'fruit' },
+    { id: 'f5', image: '🍇', label: 'عنب', category: 'fruit' },
+    { id: 'f6', image: '🍍', label: 'أناناس', category: 'fruit' },
   ];
 
-  // Level 2: More complex discrimination
-  const level2Items: DiscriminationItem[] = [
-    { id: '1', image: '🍎', label: 'تفاح أحمر', isTarget: true },
-    { id: '2', image: '🍊', label: 'برتقالة', isTarget: false },
-    { id: '3', image: '🍎', label: 'تفاح أحمر', isTarget: true },
-    { id: '4', image: '🍌', label: 'موز', isTarget: false },
+  // Level 2: Objects
+  const objectItems: DiscriminationItem[] = [
+    { id: 'o1', image: '🚗', label: 'سيارة', category: 'object' },
+    { id: 'o2', image: '🏠', label: 'منزل', category: 'object' },
+    { id: 'o3', image: '📚', label: 'كتاب', category: 'object' },
+    { id: 'o4', image: '🧸', label: 'لعبة', category: 'object' },
+    { id: 'o5', image: '🚲', label: 'دراجة', category: 'object' },
+    { id: 'o6', image: '⌚', label: 'ساعة', category: 'object' },
   ];
 
-  const items = level === 1 ? level1Items : level2Items;
-  const targetLabel = level === 1 ? 'دائرة' : 'تفاح أحمر';
+  // Level 3: Animals
+  const animalItems: DiscriminationItem[] = [
+    { id: 'a1', image: '🐱', label: 'قطة', category: 'animal' },
+    { id: 'a2', image: '🐶', label: 'كلب', category: 'animal' },
+    { id: 'a3', image: '🦁', label: 'أسد', category: 'animal' },
+    { id: 'a4', image: '🐘', label: 'فيل', category: 'animal' },
+    { id: 'a5', image: '🦒', label: 'زرافة', category: 'animal' },
+    { id: 'a6', image: '🐰', label: 'أرنب', category: 'animal' },
+  ];
+
+  const getItems = () => {
+    switch(level) {
+      case 1: return fruitItems;
+      case 2: return objectItems;
+      case 3: return animalItems;
+      default: return fruitItems;
+    }
+  };
+
+  const getTargetLabel = () => {
+    switch(level) {
+      case 1: return 'الفواكه';
+      case 2: return 'الأشياء';
+      case 3: return 'الحيوانات';
+      default: return 'الفواكه';
+    }
+  };
 
   const handleSelect = (item: DiscriminationItem) => {
-    if (item.isTarget) {
-      setScore(score + 10);
+    setScore(score + 10);
+  };
+
+  const nextLevel = () => {
+    if (level < 3) {
+      setLevel((level + 1) as 1 | 2 | 3);
+    } else {
+      setShowReward(true);
     }
   };
 
   return (
     <DashboardLayout>
       <div dir="rtl" className="p-6 max-w-4xl mx-auto">
+        <RewardSystem 
+          isVisible={showReward} 
+          starsEarned={3}
+          message="أحسنت! لقد أكملت جميع مستويات التصنيف بنجاح!"
+          onComplete={() => { setShowReward(false); setLocation("/dashboard"); }} 
+        />
+
         <div className="flex items-center gap-4 mb-8">
           <Button variant="ghost" onClick={() => setLocation("/dashboard")} className="text-[#0d1b2a]">
             <ArrowRight size={20} className="ml-2" /> رجوع
@@ -51,36 +95,29 @@ export default function Module1DiscriminationPage() {
           <div className="flex items-center gap-3">
             <span className="text-3xl">👁️</span>
             <div>
-              <h1 className="text-2xl font-black text-[#0d1b2a]">التمييز البصري</h1>
-              <p className="text-sm text-gray-500 font-bold">المحور الأول - اختر جميع الأشكال الصحيحة</p>
+              <h1 className="text-2xl font-black text-[#0d1b2a]">التصنيف والتمييز</h1>
+              <p className="text-sm text-gray-500 font-bold">المحور الأول - تعرف على {getTargetLabel()} وصنفها</p>
             </div>
           </div>
         </div>
 
         <div className="bg-white p-8 rounded-3xl shadow-sm border-2 border-cyan-400/20">
           <div className="text-center mb-8">
-            <p className="text-2xl font-black text-[#0d1b2a] mb-6">اختر جميع {targetLabel}</p>
+            <p className="text-2xl font-black text-[#0d1b2a] mb-6">اضغط على {getTargetLabel()} للتعرف عليها</p>
             <div className="flex justify-center gap-4">
-              <button
-                onClick={() => setLevel(1)}
-                className={`px-8 py-3 rounded-2xl font-black transition-all shadow-md ${
-                  level === 1
-                    ? 'bg-cyan-400 text-[#0d1b2a] scale-105'
-                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                }`}
-              >
-                المستوى 1
-              </button>
-              <button
-                onClick={() => setLevel(2)}
-                className={`px-8 py-3 rounded-2xl font-black transition-all shadow-md ${
-                  level === 2
-                    ? 'bg-cyan-400 text-[#0d1b2a] scale-105'
-                    : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
-                }`}
-              >
-                المستوى 2
-              </button>
+              {[1, 2, 3].map((l) => (
+                <button
+                  key={l}
+                  onClick={() => setLevel(l as 1 | 2 | 3)}
+                  className={`px-8 py-3 rounded-2xl font-black transition-all shadow-md ${
+                    level === l
+                      ? 'bg-cyan-400 text-[#0d1b2a] scale-105'
+                      : 'bg-gray-100 text-gray-500 hover:bg-gray-200'
+                  }`}
+                >
+                  المستوى {l}
+                </button>
+              ))}
             </div>
           </div>
 
@@ -90,14 +127,14 @@ export default function Module1DiscriminationPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 gap-6 mb-8 max-w-lg mx-auto">
-            {items.map((item) => (
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-6 mb-8 max-w-2xl mx-auto">
+            {getItems().map((item) => (
               <button
                 key={item.id}
                 onClick={() => handleSelect(item)}
-                className="bg-gray-50 hover:bg-white p-10 rounded-3xl transition-all transform hover:scale-105 border-4 border-transparent hover:border-cyan-400 shadow-sm hover:shadow-xl"
+                className="bg-gray-50 hover:bg-white p-8 rounded-3xl transition-all transform hover:scale-105 border-4 border-transparent hover:border-cyan-400 shadow-sm hover:shadow-xl group"
               >
-                <div className="text-7xl mb-4">{item.image}</div>
+                <div className="text-7xl mb-4 group-hover:scale-110 transition-transform">{item.image}</div>
                 <p className="text-[#0d1b2a] text-xl font-black">{item.label}</p>
               </button>
             ))}
@@ -107,8 +144,11 @@ export default function Module1DiscriminationPage() {
             <Button variant="outline" onClick={() => setLocation("/dashboard")} className="px-8 py-6 rounded-2xl border-2 font-black text-lg">
               إنهاء النشاط
             </Button>
-            <Button className="px-8 py-6 bg-cyan-400 hover:bg-cyan-500 text-[#0d1b2a] rounded-2xl font-black text-lg shadow-lg flex items-center gap-2">
-              المستوى التالي <ChevronRight size={24} />
+            <Button 
+              onClick={nextLevel}
+              className="px-8 py-6 bg-cyan-400 hover:bg-cyan-500 text-[#0d1b2a] rounded-2xl font-black text-lg shadow-lg flex items-center gap-2"
+            >
+              {level < 3 ? 'المستوى التالي' : 'إكمال النشاط'} <ChevronRight size={24} />
             </Button>
           </div>
         </div>
